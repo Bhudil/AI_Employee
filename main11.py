@@ -17,7 +17,7 @@ st.set_page_config(page_title="AI Employee", page_icon="🤖")
 st.title("🤖 AI Employee")
 st.markdown("---")
 
-api_key = 'AIzaSyBkIdUKQGkX60rSKUGtljpPqhFtIbiKhbc'
+api_key = 'YOUR_GOOGLE_API_KEY'
 llm = ChatGoogleGenerativeAI(model='gemini-1.5-pro', google_api_key=api_key)
 
 uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
