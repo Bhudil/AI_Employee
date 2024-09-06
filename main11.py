@@ -1,3 +1,4 @@
+# import nessessary libraries
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -12,14 +13,17 @@ from sklearn.metrics import accuracy_score, classification_report, mean_squared_
 from langchain_experimental.agents.agent_toolkits import create_csv_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+# page setup
 st.set_page_config(page_title="AI Employee", page_icon="🤖")
 
 st.title("🤖 AI Employee")
 st.markdown("---")
 
+# google gemini setup
 api_key = 'YOUR_GOOGLE_API_KEY'
 llm = ChatGoogleGenerativeAI(model='gemini-1.5-pro', google_api_key=api_key)
 
+# file uploader
 uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
@@ -27,6 +31,7 @@ if uploaded_file is not None:
     if "data" not in st.session_state:
         st.session_state["data"] = data
 
+    # cleaning and encoding of text
     if "preprocessed" not in st.session_state:
         if st.button("Preprocess Data"):
             with st.spinner("Cleaning..."):
@@ -42,6 +47,7 @@ if uploaded_file is not None:
             st.write("Preprocessed Data Preview:")
             st.dataframe(st.session_state["data"].head())
 
+    # select type of prediction
     if "preprocessed" in st.session_state:
         task = st.selectbox("Select Prediction Type:", options=["Regression", "Classification"], key="task_selection")
 
@@ -115,6 +121,7 @@ if uploaded_file is not None:
 
                 st.session_state["model_trained"] = True
 
+        # report generation using LLM
         if "model_trained" in st.session_state and "report_generated" not in st.session_state:
             if st.button("Generate Report"):
                 st.success("Creating Report...")
@@ -124,6 +131,7 @@ if uploaded_file is not None:
                 st.write(report['output'])
                 st.session_state["report_generated"] = True
 
+        # generate plots
         if "report_generated" in st.session_state:
             if st.button("Generate Plots"):
                 st.success("Creating Plots...")
@@ -144,6 +152,7 @@ if uploaded_file is not None:
                 sns.boxplot(data=st.session_state["data"].iloc[:, 1:], ax=ax)
                 st.pyplot(fig)
 
+# exit button
 if st.button("Exit"):
     st.success("Thank you for using!")
     for key in list(st.session_state.keys()):
